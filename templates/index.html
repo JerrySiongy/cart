@@ -16,73 +16,385 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
     />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
-      body {
-        background-color: #333;
-      }
+  :root{
+    --ink:#1B1B18;
+    --ivory:#EDE8DE;
+    --ivory-dim:#B9B4A8;
+    --brass:#C9A227;
+    --rust:#8C4A2F;
+    --line: rgba(237,232,222,0.14);
+    --radius: 10px;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--ivory);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,h4,h5{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    margin:0;
+  }
+
+  header{
+    padding:2.5rem 2rem 1.5rem;
+    border-bottom:1px solid var(--line);
+  }
+
+  header .eyebrow{
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-size:0.72rem;
+    color:var(--brass);
+    margin-bottom:0.4rem;
+  }
+
+  header h1{
+    font-size:clamp(2rem, 4vw, 2.8rem);
+  }
+
+  header p{
+    color:var(--ivory-dim);
+    margin-top:0.4rem;
+    max-width:40ch;
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns: 1fr 340px;
+    gap:2rem;
+    padding:2rem;
+    align-items:start;
+  }
+
+  @media (max-width: 860px){
+    .layout{ grid-template-columns: 1fr; }
+  }
+
+  .menu h2{
+    font-size:1.4rem;
+    margin-bottom:1.25rem;
+  }
+
+  .menu-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap:1.25rem;
+  }
+
+  .product-under{
+    background:#20201B;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition:border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .product-under:hover{
+    border-color:var(--brass);
+    transform:translateY(-2px);
+  }
+
+  .product-under img{
+    width:100%;
+    height:140px;
+    object-fit:cover;
+    display:block;
+  }
+
+  .product-info{
+    padding:0.9rem 1rem 1rem;
+    display:flex;
+    flex-direction:column;
+    gap:0.5rem;
+    flex:1;
+  }
+
+  .productName{
+    font-size:1rem;
+  }
+
+  .product-desc{
+    font-size:0.82rem;
+    color:var(--ivory-dim);
+    margin:0;
+    flex:1;
+  }
+
+  .price-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:0.25rem;
+  }
+
+  .price-row .price{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    color:var(--brass);
+  }
+
+  .priceValue{ /* must stay a bare number for cart.js's +productPrice conversion */
+    font-family:'Fraunces', serif;
+  }
+
+  .addToCart{
+    background:var(--brass);
+    color:var(--ink);
+    border:none;
+    border-radius:6px;
+    padding:0.45rem 0.8rem;
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:0.82rem;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+
+  .addToCart:hover{ background:#e0b62f; }
+  .addToCart:focus-visible{ outline:2px solid var(--ivory); outline-offset:2px; }
+
+  /* --- Cart / order ticket --- */
+  .cart{
+    position:sticky;
+    top:2rem;
+    background:#20201B;
+    border:1px dashed var(--ivory-dim);
+    border-radius:var(--radius);
+    padding:1.25rem;
+  }
+
+  .cart h2{
+    font-size:1.2rem;
+    margin-bottom:1rem;
+  }
+
+  #buyItems{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:0.85rem;
+    max-height:50vh;
+    overflow-y:auto;
+  }
+
+  .buyItem{
+    display:grid;
+    grid-template-columns:44px 1fr auto;
+    gap:0.6rem;
+    align-items:center;
+    padding-bottom:0.75rem;
+    border-bottom:1px solid var(--line);
+  }
+
+  .buyItem img{
+    width:44px;
+    height:44px;
+    object-fit:cover;
+    border-radius:6px;
+  }
+
+  .buyItem h5{
+    font-size:0.85rem;
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+  }
+
+  .buyItem h6{
+    font-size:0.78rem;
+    color:var(--brass);
+    font-weight:500;
+    margin:0.15rem 0 0;
+  }
+
+  .buyItem > div{
+    display:flex;
+    align-items:center;
+    gap:0.4rem;
+  }
+
+  .button-minus, .button-plus{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    border:1px solid var(--ivory-dim);
+    background:transparent;
+    color:var(--ivory);
+    cursor:pointer;
+    font-size:0.9rem;
+    line-height:1;
+  }
+
+  .button-minus:hover, .button-plus:hover{ border-color:var(--brass); color:var(--brass); }
+
+  .countOfProduct{
+    min-width:1.2rem;
+    text-align:center;
+    font-size:0.85rem;
+  }
+
+  .empty{
+    color:var(--ivory-dim);
+    font-size:0.88rem;
+    font-weight:500;
+    text-align:center;
+    padding:1rem 0;
+  }
+
+  .cart-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-top:1rem;
+    padding-top:1rem;
+    border-top:1px solid var(--line);
+    font-family:'Fraunces', serif;
+  }
+
+  #sum-prices{
+    color:var(--brass);
+    font-size:1.2rem;
+    font-weight:700;
+  }
+
+  .checkout{
+    width:100%;
+    margin-top:1rem;
+    padding:0.75rem;
+    background:var(--rust);
+    color:var(--ivory);
+    border:none;
+    border-radius:6px;
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:0.9rem;
+    cursor:pointer;
+  }
+
+  .checkout:hover{ background:#a05537; }
+
+  .hidden{ display:none; }
     </style>
   </head>
   <body>
-    <div class="container-fluid">
-      <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-dark p-0">
-        <div class="container-fluid text-light bg-dark">
-          <a class="navbar-brand" href="#">Navbar</a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link active" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active" href="#">Features</a>
-              </li>
-              <li class="nav-item">
-                  <div id="cart_icon">
-                    <a class="nav-link active" href="#">
-                    <i
-                      class="fa-solid fa-cart-shopping fa-2xl"
-                      style="color: #e27a0e"
-                    ></i>
-                    <span class="cart_item_count"></span> 
-                </a>
-                </div>
-              </li>
-            </ul>
+    
+    <header>
+  <div class="eyebrow">Urban Hotel</div>
+  <h1>Order from our kitchen</h1>
+  <p>Pick your dishes below and they'll land straight in your order ticket on the right.</p>
+</header>
+
+<main class="layout">
+
+  <section class="menu">
+    <h2>Menu</h2>
+    <div class="menu-grid">
+
+      <article class="product-under">
+        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=280&fit=crop" alt="Grilled salmon plate">
+        <div class="product-info">
+          <h5 class="productName">Grilled Salmon</h5>
+          <p class="product-desc">Citrus glaze, charred asparagus.</p>
+          <div class="price-row">
+            <span class="price">$<span class="priceValue">18</span></span>
+            <button class="addToCart" data-product-i-d="1">Add to cart</button>
           </div>
         </div>
-      </nav>
-    </div>
+      </article>
 
-    <div class="container">
-      <ul>
-        <li class="buyItem">
-          <img src="static/shoes/airforce_1_custome.jpeg" alt="">
-          <h5>Product Name</h5>
-          <h6>$199</h6>
-          <div>
-            <button class="button-minus" data-id="1">-</button> 
-            <span class="countOfProduct">1</span>
-            <button class="button-plus" data-id = '1'>+</button>
+      <article class="product-under">
+        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=280&fit=crop" alt="Wood-fired pizza">
+        <div class="product-info">
+          <h5 class="productName">Wood-Fired Margherita</h5>
+          <p class="product-desc">San Marzano, fresh basil, mozzarella.</p>
+          <div class="price-row">
+            <span class="price">$<span class="priceValue">14</span></span>
+            <button class="addToCart" data-product-i-d="2">Add to cart</button>
           </div>
-        </li>
-      </ul>
+        </div>
+      </article>
+
+      <article class="product-under">
+        <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=280&fit=crop" alt="Beef steak plate">
+        <div class="product-info">
+          <h5 class="productName">Urban Steak Frites</h5>
+          <p class="product-desc">Herb butter, hand-cut fries.</p>
+          <div class="price-row">
+            <span class="price">$<span class="priceValue">24</span></span>
+            <button class="addToCart" data-product-i-d="3">Add to cart</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-under">
+        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=280&fit=crop" alt="Garden salad">
+        <div class="product-info">
+          <h5 class="productName">Roasted Beet Salad</h5>
+          <p class="product-desc">Goat cheese, candied walnuts.</p>
+          <div class="price-row">
+            <span class="price">$<span class="priceValue">11</span></span>
+            <button class="addToCart" data-product-i-d="4">Add to cart</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-under">
+        <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=280&fit=crop" alt="Pasta dish">
+        <div class="product-info">
+          <h5 class="productName">Truffle Tagliatelle</h5>
+          <p class="product-desc">Wild mushroom, parmesan.</p>
+          <div class="price-row">
+            <span class="price">$<span class="priceValue">19</span></span>
+            <button class="addToCart" data-product-i-d="5">Add to cart</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-under">
+        <img src="https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=400&h=280&fit=crop" alt="Chocolate dessert">
+        <div class="product-info">
+          <h5 class="productName">Dark Chocolate Torte</h5>
+          <p class="product-desc">Sea salt, espresso crema.</p>
+          <div class="price-row">
+            <span class="price">$<span class="priceValue">9</span></span>
+            <button class="addToCart" data-product-i-d="6">Add to cart</button>
+          </div>
+        </div>
+      </article>
+
     </div>
+  </section>
+
+  <aside class="cart">
+    <h2>Your order</h2>
+    <ul id="buyItems"></ul>
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="sum-prices"></span>
+    </div>
+    <button class="checkout hidden">Checkout</button>
+  </aside>
+
+</main>
 
 
 
-
-
-    <script src="static/cart.js"></script>
+    <script src="static/cart1.js"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
       integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
