@@ -6,25 +6,25 @@ let cart =
 let products = [
   {
     brand: "Nike",
-    name: "classic Adizero",
+    name: "adizero",
     price: 3500,
     inCart: 0,
   },
   {
     brand: "Nike",
-    name: "air Max",
+    name: "airmax_tn",
     price: 3500,
     inCart: 0,
   },
   {
     brand: "The DG",
-    name: "classic dg",
+    name: "dg",
     price: 3500,
     inCart: 0,
   },
   {
     brand: "North Face",
-    name: "north face boot",
+    name: "north_face_boot",
     price: 3500,
     inCart: 0,
   },
@@ -103,4 +103,26 @@ function totalCost(products) {
   }
 }
 
+function displayCart(){
+
+    let cartItems = localStorage.getItem('productsInCart');
+    cartItems = JSON.parse(cartItems);
+
+    let productsContainer = document.querySelector('.products-container');
+    
+    if(cartItems && productsContainer){
+        productsContainer.innerHTML = ``;
+        Object.values(cartItems).map(item =>{
+            productsContainer.innerHTML += `
+            <div class='products'>
+                 <img src="static/shoes/${item.name}.jpeg">
+                <span>${item.name}</span>
+            </div> 
+            `
+
+        });
+    }
+}
+
 onLoadCartNumbers();
+displayCart();

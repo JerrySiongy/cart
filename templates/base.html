@@ -69,6 +69,28 @@
 
 
     <script src="static/main.js"></script>
+
+    <!--tables-->
+
+    <script>
+      const table = new DataTable('#example');
+
+table.on('mouseenter', 'td', function () {
+	let colIdx = table.cell(this).index().column;
+
+	table
+		.cells()
+		.nodes()
+		.each((el) => el.classList.remove('highlight'));
+
+	table
+		.column(colIdx)
+		.nodes()
+		.each((el) => el.classList.add('highlight'));
+});
+    </script>
+
+
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
       integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
