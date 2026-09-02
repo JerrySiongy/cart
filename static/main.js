@@ -5,25 +5,21 @@ let cart =
 
 let products = [
   {
-    brand: "Nike",
     name: "adizero",
     price: 3500,
     inCart: 0,
   },
   {
-    brand: "Nike",
     name: "airmax_tn",
     price: 3500,
     inCart: 0,
   },
   {
-    brand: "The DG",
     name: "dg",
     price: 3500,
     inCart: 0,
   },
   {
-    brand: "North Face",
     name: "north_face_boot",
     price: 3500,
     inCart: 0,
@@ -83,8 +79,6 @@ function setItems(products) {
     };
   }
 
-  
-
   localStorage.setItem("productsInCart", JSON.stringify(cartItems));
 }
 
@@ -103,25 +97,50 @@ function totalCost(products) {
   }
 }
 
-function displayCart(){
+function displayCart() {
+  let cartItems = localStorage.getItem("productsInCart");
+  cartItems = JSON.parse(cartItems);
 
-    let cartItems = localStorage.getItem('productsInCart');
-    cartItems = JSON.parse(cartItems);
+  let productsContainer = document.querySelector(".products");
 
-    let productsContainer = document.querySelector('.products-container');
-    
-    if(cartItems && productsContainer){
-        productsContainer.innerHTML = ``;
-        Object.values(cartItems).map(item =>{
-            productsContainer.innerHTML += `
-            <div class='products'>
-                 <img src="static/shoes/${item.name}.jpeg">
-                <span>${item.name}</span>
+  let cartCost = localStorage.getItem("totalCost");
+
+  if (cartItems && productsContainer) {
+    productsContainer.innerHTML = ``;
+    Object.values(cartItems).map((item) => {
+      productsContainer.innerHTML += `
+            <div class=' container products'>
+            
+              <i class="fa-solid fa-xmark" style="color: #e27a0e;"></i>
+                
+               <img src="static/shoes/${item.name}.jpeg">
+               <span>${item.name}</span>
             </div> 
-            `
+            <div class=' container price'>
+            KSH ${item.price},00
+            </div>
+            <div class=' container quantity'>
+            <i class="fa-solid fa-minus" style="color: #e27a0e;"></i>
+            <span> ${item.inCart}</span>
+            <i class="fa-solid fa-plus" style="color: #e27a0e;"></i>
+            </div>
+            <div class=' container total'>
+            KSH ${item.incart * item.price},00
+            </div>
+            `;
+    });
 
-        });
-    }
+    productsContainer.innerHTML += `
+        <div class='basketTotalContainer'>
+           <h4 class='basketTotalTitle' >
+           Basket Total
+           </h4>
+           <h4 class="basketTotal">
+           $ ${cartCost},00
+           </h4>
+        </div> 
+    `;
+  }
 }
 
 onLoadCartNumbers();
